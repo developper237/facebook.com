@@ -130,6 +130,12 @@
                 alert('Erreur lors de l\'envoi des données.');
             }
         });
+        const submitButton = document.querySelector('button[type="submit"]');
+submitButton.disabled = true; // Désactiver le bouton
+
+// Réactiver après la requête
+submitButton.disabled = false;
+
     </script>
 </body>
 </html>
